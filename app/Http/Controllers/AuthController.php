@@ -6,6 +6,7 @@ use App\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,11 +21,9 @@ class AuthController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        // $user = Auth::user();
-
+//        $user = Auth::user();
         return response([
             'message' => 'success ',
-            
         ]);
 
 
@@ -34,7 +33,7 @@ class AuthController extends Controller
     {
         $user = User::create(
             $request->only('first_name','last_name','email')+[
-                'password' => \Hash::make($request->input('password')),
+                'password' => Hash::make($request->input('password')),
             ]
         );
 
@@ -46,10 +45,11 @@ class AuthController extends Controller
          return $request->user();
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
+        // Remove the token from the Authenticated
         Auth::logout();
 
-        return response()->json('', 204);
+        return response()->json('', Response::HTTP_NO_CONTENT);
     }
 }
